@@ -16,10 +16,18 @@ import { User } from '../entities/user.entity';
         password: configService.get('DATABASE_PASSWORD'),
         database: configService.get('DATABASE_NAME'),
         entities: [User],
+        autoLoadEntities: true,
         synchronize: process.env.NODE_ENV === 'development',
         logging: process.env.NODE_ENV === 'development',
       }),
     }),
   ],
 })
+
+// await AppDataSource.initialize()
+// .then(() => {
+//     console.log("Data Source has been initialized");
+// })
+// .catch(() => console.error("Error during data source init."));
+
 export class DatabaseModule {}
