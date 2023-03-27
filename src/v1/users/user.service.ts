@@ -82,7 +82,7 @@ export class UsersService {
   }
 
   async forgotPassword(email: string) {
-    console.log(email)
+    console.log(email);
     const confirmUser = await this.usersRepository.findOne({
       where: { email: email.toLowerCase() },
     });
@@ -99,28 +99,25 @@ export class UsersService {
 
     await this.mailService.sendForgotPasswordEmail(confirmUser);
 
-    return "password reset link sent, kindly check your mail"
+    return 'password reset link sent, kindly check your mail';
   }
 
   async resetPassword(confirmationCode: string, password: string) {
-
     const confirmUser = await this.usersRepository.findOne({
       where: { confirmationCode: confirmationCode },
     });
 
     if (!confirmUser) {
-      throw new HttpException(
-        'Invalid confirmation code!!!',
-        404,
-      );
+      throw new HttpException('Invalid confirmation code!!!', 404);
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10)
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     confirmUser.password = hashedPassword;
+    confirmUser.confirmationCode = '';
     await this.usersRepository.save(confirmUser);
 
-    return "password reset successful!!!"
+    return 'password reset successful!!!';
   }
 
   // updateUser(){
