@@ -6,6 +6,7 @@ import { UsersRepository } from './user.repository';
 import { generateString } from '../utilities/generateCode.utility';
 import * as bcrypt from 'bcrypt';
 import { MailService } from '../mailer/mailer.service';
+import { userProfileRequest } from './interfaces/user.interfaces';
 
 @Injectable()
 export class UsersService {
@@ -14,13 +15,23 @@ export class UsersService {
     private readonly mailService: MailService,
   ) {}
 
-  // getAllUsers(): Cat[] {
-  //   return this.cats;
-  // }
-
-  // getUser() {
-
-  // }
+  async getUserProfile(user: userProfileRequest) {
+    try {
+      const userProfile = await this.usersRepository.findOne({
+        select: [
+          'id',
+          'firstName',
+          'lastName',
+          'email',
+          'isActive',
+        ],
+        where: { id: user.id },
+      });
+      return userProfile;
+    } catch (error) {
+      throw new HttpException('internal server error', HttpStatus.BAD_GATEWAY);
+    }
+  }
 
   async createUser(user: createUserDTO) {
     user.email.toLowerCase();
@@ -48,7 +59,7 @@ export class UsersService {
 
   async loginUser(username: string) {
     let user = await this.usersRepository.findOne({
-      select: ['id', 'firstName', 'lastName', 'password', 'email', 'isActive'],
+      select: ['id', 'firstName', 'lastName', 'email', 'isActive'],
       where: {
         email: username.toLowerCase(),
       },
@@ -82,7 +93,6 @@ export class UsersService {
   }
 
   async forgotPassword(email: string) {
-    console.log(email);
     const confirmUser = await this.usersRepository.findOne({
       where: { email: email.toLowerCase() },
     });
@@ -119,10 +129,6 @@ export class UsersService {
 
     return 'password reset successful!!!';
   }
-
-  // updateUser(){
-
-  // }
 
   // deleteUser(){}
 }
