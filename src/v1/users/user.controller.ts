@@ -4,23 +4,24 @@ import {
   Get,
   HttpCode,
   Param,
+  Patch,
   Post,
+  Put,
   Request,
   UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport/dist/auth.guard';
 import { AuthService } from '../auth/auth.service';
 import { JwtAuthGuard } from '../auth/guards/auth.jwt-auth.guard';
 import { LocalAuthGuard } from '../auth/guards/auth.jwt.local_auh_guard';
 import { createUserDTO } from './dtos/user.create.dto';
+import { updateUserDTO } from './dtos/user.update.dto';
 import {
   emailVerificationParam,
   forgotPassword,
   resetPassword,
   resetpasswordparam,
-  userProfileRequest,
 } from './interfaces/user.interfaces';
 import { UsersService } from './user.service';
 
@@ -34,7 +35,7 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @Get('/profile')
   async findUser(@Request() req) {
-    console.log(req.user)
+    console.log(req.user);
     return await this.usersService.getUserProfile(req.user);
   }
 
@@ -75,5 +76,11 @@ export class UsersController {
       param.confirmationCode,
       userpassword.password,
     );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put('/update_profile')
+  async updateProfile(@Body() userData: updateUserDTO, @Request() req) {
+    return this.usersService.updateUser(userData, req.user);
   }
 }

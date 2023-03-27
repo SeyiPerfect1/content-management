@@ -6,7 +6,8 @@ import { UsersRepository } from './user.repository';
 import { generateString } from '../utilities/generateCode.utility';
 import * as bcrypt from 'bcrypt';
 import { MailService } from '../mailer/mailer.service';
-import { userProfileRequest } from './interfaces/user.interfaces';
+import { updateUserDTO } from './dtos/user.update.dto';
+import { userRequest } from './interfaces/user.interfaces';
 
 @Injectable()
 export class UsersService {
@@ -15,7 +16,7 @@ export class UsersService {
     private readonly mailService: MailService,
   ) {}
 
-  async getUserProfile(user: userProfileRequest) {
+  async getUserProfile(user: userRequest) {
     try {
       const userProfile = await this.usersRepository.findOne({
         select: [
@@ -128,6 +129,28 @@ export class UsersService {
     await this.usersRepository.save(confirmUser);
 
     return 'password reset successful!!!';
+  }
+
+  async updateUser(userData: updateUserDTO, user: userRequest){
+    try {
+      const userDetails = await this.usersRepository.findOne({
+        select: [
+          'id',
+          'firstName',
+          'lastName',
+          'email',
+          'isActive',
+        ],
+        where: { id: user.id },
+      });
+      
+      const updatedUser = { ...userDetails, ...userData}
+      await this.usersRepository.save(updatedUser);
+
+      return updatedUser
+    } catch (error) {
+      throw new HttpException('internal server error', HttpStatus.BAD_GATEWAY);
+    }
   }
 
   // deleteUser(){}

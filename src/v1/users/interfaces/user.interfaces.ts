@@ -19,7 +19,7 @@ interface resetPassword {
   password: string
 }
 
-interface userProfileRequest {
+interface userRequest {
   id: string;
   email: string
 }
@@ -30,6 +30,6 @@ export {
     forgotPassword,
     emailVerificationParam,
     resetPassword,
-    userProfileRequest
+    userRequest
 }
 
