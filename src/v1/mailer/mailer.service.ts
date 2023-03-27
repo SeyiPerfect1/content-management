@@ -35,8 +35,8 @@ export class MailService {
         subject: 'Password Reset Link', // Subject line
         html: `<h1>Password Reset</h1>
         <h2>Hello ${user.firstName} ${user.lastName}</h2>
-        <p>Verify your email address to complete the signup and login to your account</p>
-        <a href=${AppConfig.get('BASE_URL')}/api/v1/users/forgot_password/${user.confirmationCode}> Click here</a>`,
+        <p>Click on the link to reset your password</p>
+        <a href=${AppConfig.get('BASE_URL')}/api/v1/users/reset_password/${user.confirmationCode}> Click here</a>`,
   }) // HTML body content
       .then(() => {})
       .catch((error) => {

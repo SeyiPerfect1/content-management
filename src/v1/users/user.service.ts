@@ -102,6 +102,27 @@ export class UsersService {
     return "password reset link sent, kindly check your mail"
   }
 
+  async resetPassword(confirmationCode: string, password: string) {
+
+    const confirmUser = await this.usersRepository.findOne({
+      where: { confirmationCode: confirmationCode },
+    });
+
+    if (!confirmUser) {
+      throw new HttpException(
+        'Invalid confirmation code!!!',
+        404,
+      );
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10)
+
+    confirmUser.password = hashedPassword;
+    await this.usersRepository.save(confirmUser);
+
+    return "password reset successful!!!"
+  }
+
   // updateUser(){
 
   // }

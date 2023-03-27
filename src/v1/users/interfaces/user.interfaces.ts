@@ -3,7 +3,7 @@ interface loginInterface {
   password: string;
 }
 
-interface param {
+interface resetpasswordparam {
   confirmationCode: string
 }
 
@@ -11,9 +11,19 @@ interface forgotPassword {
   email: string
 }
 
+interface emailVerificationParam {
+  confirmationCode: string
+}
+
+interface resetPassword {
+  password: string
+}
+
 export {
     loginInterface,
-    param,
-    forgotPassword
+    resetpasswordparam,
+    forgotPassword,
+    emailVerificationParam,
+    resetPassword
 }
 
