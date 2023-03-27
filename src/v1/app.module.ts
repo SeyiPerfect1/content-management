@@ -11,6 +11,8 @@ import { DatabaseModule } from './database/typeorm.module';
 import { dbConfigValidationSchema } from './database/config/typeorm.config.validation';
 import { AuthModule } from './auth/auth.module';
 import { jwtValidationSchema } from './auth/config/auth.config.validation';
+import { MailModule } from './mailer/mailer.module';
+import { mailerValidationSchema } from './mailer/config/mailer.config.validation';
 
 @Module({
   imports: [
@@ -22,6 +24,11 @@ import { jwtValidationSchema } from './auth/config/auth.config.validation';
       isGlobal: true,
       validationSchema: jwtValidationSchema,
     }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      validationSchema: mailerValidationSchema,
+    }),
+    MailModule,
     DatabaseModule,
     AuthModule,
     UsersModule,

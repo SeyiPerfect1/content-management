@@ -3,7 +3,12 @@ interface loginInterface {
   password: string;
 }
 
+interface param {
+  confirmationCode: string
+}
+
 export {
-    loginInterface
+    loginInterface,
+    param
 }
 
