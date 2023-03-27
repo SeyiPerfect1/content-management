@@ -23,16 +23,15 @@ export class UsersService {
   // }
 
   async createUser(user: createUserDTO) {
-    try {
       user.email.toLowerCase();
 
-      // const existUser = await this.usersRepository.findOne({
-      //   where: { email: user.email.toLowerCase() },
-      // });
+      const existUser = await this.usersRepository.findOne({
+        where: { email: user.email.toLowerCase() },
+      });
 
-      // if (existUser) {
-      //   throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
-      // }
+      if (existUser) {
+        throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
+      }
 
       user.confirmationCode = await generateString(20);
 
@@ -44,17 +43,11 @@ export class UsersService {
       });
 
       await this.mailService.sendConfirmationEmail(user);
-
-    } catch (error) {
-      throw new HttpException('Server error', HttpStatus.BAD_REQUEST);
-    } finally {
-      return 'User created successfully! Please check your mail';
-    }
+      return 'User created successfully! Please check your mail'
   }
 
   async loginUser(username: string) {
-    try {
-      return await this.usersRepository.findOne({
+let user = await this.usersRepository.findOne({
         select: [
           'id',
           'firstName',
@@ -67,9 +60,12 @@ export class UsersService {
           email: username.toLowerCase(),
         },
       });
-    } catch (error) {
-      throw new HttpException('Server error', HttpStatus.BAD_REQUEST);
-    } 
+
+      if (user.isActive===false) {
+        throw new HttpException('User not yet verified. Pls, kindly check your mail', 400)
+      } else {
+        return user
+      } 
   }
 
   async verifyUserEmail(confirmationCode: string) {
