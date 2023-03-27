@@ -22,13 +22,6 @@ import { AppConfig } from './config/mailer.app.config';
           defaults: {
             from: '"nest-modules" <modules@nestjs.com>',
           },
-          //   template: {
-          //     dir: __dirname + '/templates',
-          //     adapter: new PugAdapter(),
-          //     options: {
-          //       strict: true,
-          //     },
-          //   },
         },
       }),
     }),

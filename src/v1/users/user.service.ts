@@ -23,66 +23,83 @@ export class UsersService {
   // }
 
   async createUser(user: createUserDTO) {
-      user.email.toLowerCase();
+    user.email.toLowerCase();
 
-      const existUser = await this.usersRepository.findOne({
-        where: { email: user.email.toLowerCase() },
-      });
+    const existUser = await this.usersRepository.findOne({
+      where: { email: user.email.toLowerCase() },
+    });
 
-      if (existUser) {
-        throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
-      }
+    if (existUser) {
+      throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
+    }
 
-      user.confirmationCode = await generateString(20);
+    user.confirmationCode = await generateString(20);
 
-      const hashedPassword = await bcrypt.hash(user.password, 10);
+    const hashedPassword = await bcrypt.hash(user.password, 10);
 
-      await this.usersRepository.save({
-        ...user,
-        password: hashedPassword,
-      });
+    await this.usersRepository.save({
+      ...user,
+      password: hashedPassword,
+    });
 
-      await this.mailService.sendConfirmationEmail(user);
-      return 'User created successfully! Please check your mail'
+    await this.mailService.sendConfirmationEmail(user);
+    return 'User created successfully! Please check your mail';
   }
 
   async loginUser(username: string) {
-let user = await this.usersRepository.findOne({
-        select: [
-          'id',
-          'firstName',
-          'lastName',
-          'password',
-          'email',
-          'isActive',
-        ],
-        where: {
-          email: username.toLowerCase(),
-        },
-      });
+    let user = await this.usersRepository.findOne({
+      select: ['id', 'firstName', 'lastName', 'password', 'email', 'isActive'],
+      where: {
+        email: username.toLowerCase(),
+      },
+    });
 
-      if (user.isActive===false) {
-        throw new HttpException('User not yet verified. Pls, kindly check your mail', 400)
-      } else {
-        return user
-      } 
+    if (user.isActive === false) {
+      throw new HttpException(
+        'User not yet verified. Pls, kindly check your mail',
+        400,
+      );
+    } else {
+      return user;
+    }
   }
 
   async verifyUserEmail(confirmationCode: string) {
-    const confimUser = await this.usersRepository.findOne({
+    const confirmUser = await this.usersRepository.findOne({
       where: { confirmationCode: confirmationCode },
     });
 
-    if (!confimUser) {
+    if (!confirmUser) {
       throw new HttpException('Invalid Verification Code', 404);
     }
 
-    confimUser.isActive = true;
-    confimUser.confirmationCode = '';
+    confirmUser.isActive = true;
+    confirmUser.confirmationCode = '';
 
-    await this.usersRepository.save(confimUser);
+    await this.usersRepository.save(confirmUser);
 
     return 'Verification Successful.You can now login';
+  }
+
+  async forgotPassword(email: string) {
+    console.log(email)
+    const confirmUser = await this.usersRepository.findOne({
+      where: { email: email.toLowerCase() },
+    });
+
+    if (!confirmUser) {
+      throw new HttpException(
+        'This email has not been registered, Kindly signup',
+        404,
+      );
+    }
+
+    confirmUser.confirmationCode = await generateString(20);
+    await this.usersRepository.save(confirmUser);
+
+    await this.mailService.sendForgotPasswordEmail(confirmUser);
+
+    return "password reset link sent, kindly check your mail"
   }
 
   // updateUser(){

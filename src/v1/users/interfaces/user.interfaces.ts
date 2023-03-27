@@ -7,8 +7,13 @@ interface param {
   confirmationCode: string
 }
 
+interface forgotPassword {
+  email: string
+}
+
 export {
     loginInterface,
-    param
+    param,
+    forgotPassword
 }
 
