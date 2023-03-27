@@ -21,7 +21,6 @@ interface resetPassword {
 
 interface userRequest {
   userId: string;
-  email: string
 }
 
 export {

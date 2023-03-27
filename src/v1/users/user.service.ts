@@ -59,7 +59,12 @@ export class UsersService {
         email: username.toLowerCase(),
       },
     });
-
+    if (!user) {
+      throw new HttpException(
+        'You dont have an account yet. Pls, kindly signup',
+        404,
+      );
+    }
     if (user.isActive === false) {
       throw new HttpException(
         'User not yet verified. Pls, kindly check your mail',
