@@ -19,14 +19,8 @@ export class UsersService {
   async getUserProfile(user: userRequest) {
     try {
       const userProfile = await this.usersRepository.findOne({
-        select: [
-          'id',
-          'firstName',
-          'lastName',
-          'email',
-          'isActive',
-        ],
-        where: { id: user.id },
+        select: ['id', 'firstName', 'lastName', 'email', 'isActive'],
+        where: { id: user.userId },
       });
       return userProfile;
     } catch (error) {
@@ -60,7 +54,7 @@ export class UsersService {
 
   async loginUser(username: string) {
     let user = await this.usersRepository.findOne({
-      select: ['id', 'firstName', 'lastName', 'email', 'isActive'],
+      select: ['id', 'firstName', 'lastName', 'password', 'email', 'isActive'],
       where: {
         email: username.toLowerCase(),
       },
@@ -131,27 +125,29 @@ export class UsersService {
     return 'password reset successful!!!';
   }
 
-  async updateUser(userData: updateUserDTO, user: userRequest){
+  async updateUser(userData: updateUserDTO, user: userRequest) {
     try {
       const userDetails = await this.usersRepository.findOne({
-        select: [
-          'id',
-          'firstName',
-          'lastName',
-          'email',
-          'isActive',
-        ],
-        where: { id: user.id },
+        select: ['id', 'firstName', 'lastName', 'email', 'isActive'],
+        where: { id: user.userId },
       });
-      
-      const updatedUser = { ...userDetails, ...userData}
+
+      const updatedUser = { ...userDetails, ...userData };
       await this.usersRepository.save(updatedUser);
 
-      return updatedUser
+      return updatedUser;
     } catch (error) {
-      throw new HttpException('internal server error', HttpStatus.BAD_GATEWAY);
+      throw new HttpException('Internal server error', HttpStatus.BAD_GATEWAY);
     }
   }
 
-  // deleteUser(){}
+  async deleteUser(user: userRequest) {
+    try {
+      await this.usersRepository.delete({ id: user.userId });
+
+      return 'User deleted successfully!';
+    } catch (error) {
+      throw new HttpException('Internal server error', HttpStatus.BAD_GATEWAY);
+    }
+  }
 }

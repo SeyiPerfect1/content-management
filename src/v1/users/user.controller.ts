@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   Param,
@@ -51,19 +52,19 @@ export class UsersController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Request() req) {
-    return this.authService.login(req.user);
+    return await this.authService.login(req.user);
   }
 
   // send email confirmation to user on signup
   @Get('/confirm/:confirmationCode')
   async confirmMail(@Param() param: emailVerificationParam) {
-    return this.usersService.verifyUserEmail(param.confirmationCode);
+    return await this.usersService.verifyUserEmail(param.confirmationCode);
   }
 
   // send password resent link to user
   @Post('/forgot_password')
   async forgotPasswordMail(@Body() userEmail: forgotPassword) {
-    return this.usersService.forgotPassword(userEmail.email);
+    return await this.usersService.forgotPassword(userEmail.email);
   }
 
   //  rest a user password
@@ -72,15 +73,23 @@ export class UsersController {
     @Body() userpassword: resetPassword,
     @Param() param: resetpasswordparam,
   ) {
-    return this.usersService.resetPassword(
+    return await this.usersService.resetPassword(
       param.confirmationCode,
       userpassword.password,
     );
   }
 
+  // update user profile
   @UseGuards(JwtAuthGuard)
   @Put('/update_profile')
   async updateProfile(@Body() userData: updateUserDTO, @Request() req) {
-    return this.usersService.updateUser(userData, req.user);
+    return await this.usersService.updateUser(userData, req.user);
+  }
+
+  // delete a user
+  @UseGuards(JwtAuthGuard)
+  @Delete('/delete_profile')
+  async deleteProfile(@Request() req) {
+    return await this.usersService.deleteUser(req.user);
   }
 }

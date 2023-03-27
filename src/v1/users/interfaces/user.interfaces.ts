@@ -20,7 +20,7 @@ interface resetPassword {
 }
 
 interface userRequest {
-  id: string;
+  userId: string;
   email: string
 }
 
