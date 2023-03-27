@@ -12,6 +12,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport/dist/auth.guard';
 import { AuthService } from '../auth/auth.service';
+import { JwtAuthGuard } from '../auth/guards/auth.jwt-auth.guard';
 import { LocalAuthGuard } from '../auth/guards/auth.jwt.local_auh_guard';
 import { createUserDTO } from './dtos/user.create.dto';
 import {
@@ -19,6 +20,7 @@ import {
   forgotPassword,
   resetPassword,
   resetpasswordparam,
+  userProfileRequest,
 } from './interfaces/user.interfaces';
 import { UsersService } from './user.service';
 
@@ -29,10 +31,12 @@ export class UsersController {
     private authService: AuthService,
   ) {}
 
-  // @Get()
-  // findAll(): string {
-  //   return 'This action returns all users';
-  // }
+  @UseGuards(JwtAuthGuard)
+  @Get('/profile')
+  async findUser(@Request() req) {
+    console.log(req.user)
+    return await this.usersService.getUserProfile(req.user);
+  }
 
   // signup a user
   @Post('/signup')

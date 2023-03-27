@@ -19,11 +19,17 @@ interface resetPassword {
   password: string
 }
 
+interface userProfileRequest {
+  id: string;
+  email: string
+}
+
 export {
     loginInterface,
     resetpasswordparam,
     forgotPassword,
     emailVerificationParam,
-    resetPassword
+    resetPassword,
+    userProfileRequest
 }
 
