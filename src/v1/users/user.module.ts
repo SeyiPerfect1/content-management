@@ -11,7 +11,7 @@ import { MailModule } from '../mailer/mailer.module';
   imports: [
     TypeOrmModule.forFeature([User, UsersRepository]),
     forwardRef(() => AuthModule),
-    MailModule
+    MailModule,
   ],
   controllers: [UsersController],
   providers: [UsersService],

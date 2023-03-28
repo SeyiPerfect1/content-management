@@ -5,7 +5,6 @@ import {
   Get,
   HttpCode,
   Param,
-  Patch,
   Post,
   Put,
   Request,
@@ -13,6 +12,7 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler/dist/throttler.decorator';
 import { AuthService } from '../auth/auth.service';
 import { JwtAuthGuard } from '../auth/guards/auth.jwt-auth.guard';
 import { LocalAuthGuard } from '../auth/guards/auth.jwt.local_auh_guard';
@@ -26,6 +26,7 @@ import {
 } from './interfaces/user.interfaces';
 import { UsersService } from './user.service';
 
+@Throttle()
 @Controller('api/v1/users')
 export class UsersController {
   constructor(

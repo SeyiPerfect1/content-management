@@ -13,7 +13,6 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { AuthService } from '../auth/auth.service';
 import { JwtAuthGuard } from '../auth/guards/auth.jwt-auth.guard';
 import { createPostDTO } from './dtos/post.create.dto';
 import { updatePostDTO } from './dtos/post.update.dto';
