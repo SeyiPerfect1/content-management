@@ -1,30 +1,4 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
-
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
-
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+# Content-Managament App<br>
 
 ## Installation
 
@@ -47,7 +21,8 @@ $ npm run start:prod
 
 ## Test
 
-```bash
+```
+bash
 # unit tests
 $ npm run test
 
@@ -58,16 +33,250 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
-## Support
+## Models <br>
+### users
+| field	| data_type	| constraints | validation |
+| -------- | ---------| -----------| ----------------------|
+| id | Object | required | None |
+| firstname |	string | required | None |
+| lastname |	string | required | None |
+| email |	string | required | unique, email must conform to email (example: user1@gmail.com) |
+| password |	string | required | pasword must contain at least one uppercase, one lowercase, one symbol, and must be at least 8 |
+| confirmationCode | string | None | None, Generated automatically on signup |
+| isActive | boolean | default: false, changed to true on email verification | None | <br>
+### posts
+| field	| data_type	| constraints | validation |
+| -------- | ---------| -----------| ----------------------|
+| id | Object | required | None |
+| title | string	| required | None |
+| description |	string | optional | unique |
+| body |	string | required | None |
+| readCount |	Number | increament automaticaly by 1 when the post is queried, default: 0  | None |
+| userId | foreign key | required | None | <hr>
+## APIs <br>
+#### USERS
+### Signup User <br> 
+ * Route: /api/v1/users/signup
+ * Method: POST
+ * Body:
+ ```
+ {
+  "email": "doe@example.com",
+  "password": "Password1",
+  "firstname": "jon",
+  "lastname": "doe",
+ }
+ ```
+ * Responses: Success
+  ```
+  {
+    'User created successfully! Please check your mail',
+  }
+  ```
+### Login User
+ * Route: /api/v1/users/login
+ * Method: POST
+ * Body:
+ ```
+ {
+   "password": "Password1",
+   "email": 'doe@example.com",
+ }
+ ```
+ * Responses: Success
+ ```
+ {
+   "token": "exampletoken&8ofiwhb.fburu276r4ufhwu4.o82uy3rjlfwebj",
+ }
+ ```
+ ### Email Verification
+ * Route: api/v1/users/confirm/:confirmationCode
+ * Method: GET
+ * Header
+   - Authorization: None
+ * Responses: Success
+ ```
+ {
+   "Verification Successful.You can now login",
+ }
+ ```
+### Forgot Password
+ * Route: api/v1/users/forgot_password
+ * Method: POST
+ * Header
+   - Authorization: None
+ * Body:
+ ```
+ {
+   "email": "example@gmail.com",
+ }
+ ```
+ * Responses: Success
+ ```
+ {
+   "password reset link sent, kindly check your mail",
+ }
+ ```
+### Reset Password    
+ * Route: api/v1/users/reset_password/:confirmationCode       
+ * Method: POST
+ * Header
+   - Authorization: None
+ * Responses:  
+ ```
+ {
+   "password reset successful!!!"
+ }
+ ```
+### Get Profile   
+ * Route: api/v1/users/profile
+ * Method: GET
+ * Header:
+   - Authorization: Bearer {token}
+ * Query params: None
+ * Responses: Success
+ ```
+ {
+    "id": "ydwy-oeji-83y8-ifee",
+    "firstName": "Oluseyi",
+    "lastName": "Adeegbe",
+    "email": "adeegbeoluseyi",
+    "password": "@Password1'",
+    "isActive": false
+ }
+ ```
+ ### Update User
+ * Route: api/v1/users/update_profile
+ * Method: PUT
+ * Header
+   - Authorization: Bearer {token}
+ * Body:
+ ```
+ { 
+   "firstname": "exampleName",
+   "lastname": "Oluseyi"
+ }
+ ```
+ * Responses: Success
+ ```
+ {
+    "id": "ydwy-oeji-83y8-ifee",
+    "firstName": "exampleName",
+    "lastName": "Oluseyi",
+    "email": "adeegbeoluseyi",
+    "isActive": false
+ }
+ ```
+### Delete User
+ * Route: api/v1/users/delete_profile
+ * Method: DELETE
+ * Header
+   - Authorization: Bearer {token}
+ * Responses: Success
+ ```
+ {
+   "User deleted successfully!",
+ }
+ ```
+ #### POSTS
+ ### Create Posts
+ * Route: api/v1/posts
+ * Method: POST
+ * Header
+   - Authorization: Bearer {token}
+ * Body: 
+ ```
+ {
+    "title": "My Story",
+    "description": "Story of my life",
+    "body": "Lorem Ipsum Ipsum Ipsum"
+ }
+ ```
+ * Responses: Success
+ ```
+ {
+    "post created successfully!"
+ },
+ ```
+ ### Get Posts
+ * Route: api/v1/posts
+ * Method: GET
+ * Header
+   - Authorization: Bearer {token}
+ * Body: None
+ * Responses: Success
+ ```
+ [{
+    "id": "uodh-jcje-84uj-nei9",
+    "title": "My Story",
+    "description": "Story of my life",
+    "body": "Lorem Ipsum Ipsum Ipsum
+ }]......
+ ```
+ 
+  ### Get Post
+ * Route: api/v1/posts/:id
+ * Method: GET
+ * Header
+   - Authorization: Bearer {token}
+ * Params: id
+ * Body: None
+ * Responses: Success
+ ```
+ {
+    "id": "uodh-jcje-84uj-nei9",
+    "title": "My Story",
+    "description": "Story of my life",
+    "body": "Lorem Ipsum Ipsum Ipsum
+ },
+ ```
+ 
+ ### Update Post
+ * Route: api/v1/posts/:id
+ * Method: PUT
+ * Params: id
+ * Header
+   - Authorization: Bearer {token}
+  * Body: 
+ ```
+ {
+    "title": "My life",
+    "description": "Story of my life",
+    "body": "Lorem Ipsum Ipsum Ipsum"
+ }
+ ```
+ * Responses: Success
+ ```
+ {  
+    "id": "yrt7-chef-o9u3-jeoj",
+    "title": "My life",
+    "description": "Story of my life",
+    "body": "Lorem Ipsum Ipsum Ipsum"
+    "viewCount": 0,
+    "userId": { 
+                "id": "ydwy-oeji-83y8-ifee",
+                "firstName": "Oluseyi",
+                "lastName": "Adeegbe",
+                "email": "adeegbeoluseyi",
+                "password": "@Password1'",
+                "isActive": false
+    }
+ }
+ ```
+ ### Delete Post
+ * Route: api/v1/posts/:id
+ * Method: DELETE
+ * Params: id
+ * Header
+   - Authorization: Bearer {token}
+ * Responses: Success
+ ```
+ {
+   Post deleted successfully!,
+ }
+ ```
+ 
+...
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+Contributor:
+Oluseyi Adeegbe
