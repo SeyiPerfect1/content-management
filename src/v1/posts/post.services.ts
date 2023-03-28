@@ -6,6 +6,7 @@ import { Post } from './entities/post.entity';
 import { userRequest } from '../users/interfaces/user.interfaces';
 import { User } from '../users/entities/user.entity';
 import { UsersRepository } from '../users/user.repository';
+import { updatePostDTO } from './dtos/post.update.dto';
 
 @Injectable()
 export class PostsService {
@@ -33,29 +34,69 @@ export class PostsService {
   }
 
   async getPostById(id: string) {
+    const post = await this.postsRepository.findOne({
+      where: { id: id },
+      relations: ['user'],
+    });
+
+    if (!post) {
+      throw new HttpException('No post found', 404);
+    } else {
+      delete post.user.password;
+      delete post.user.confirmationCode;
+
+      post.viewCount+= 1
+      await this.postsRepository.save(post)
+      return post;
+    }
+  }
+
+  async updatePost(post: updatePostDTO, id: string, userId:string) {
     try {
-      const post = await this.postsRepository.findOne({
+      const queriredPost = await this.postsRepository.findOne({
         where: { id: id },
         relations: ['user'],
       });
 
-      delete post.user.password
-      delete post.user.confirmationCode
-      if (!post) {
+      if (!queriredPost) {
         throw new HttpException('No post found', 404);
+      } 
+
+      if(queriredPost.user.id !== userId){
+        throw new HttpException('You are not the owner of the post', HttpStatus.FORBIDDEN)
       }
-      return post;
+
+      await this.postsRepository.update(id, post);
+      const updatedPost = await this.postsRepository.findOne({
+        where: { id: id },
+        relations: ['user'],
+      });
+      if (updatedPost) {
+        delete updatedPost.user.password;
+        delete updatedPost.user.confirmationCode;
+        return updatedPost;
+      }
     } catch (error) {
       throw new HttpException('Internal server error', HttpStatus.BAD_GATEWAY);
     }
   }
 
-  // async updatePost(id: number, post: UpdatePostDto) {
-  //   await this.postsRepository.update(id, post);
-  //   const updatedPost = await this.postsRepository.findOne(id, { relations: ['author'] });
-  //   if (updatedPost) {
-  //     return updatedPost
-  //   }
-  //   throw new PostNotFoundException(id);
-  // }
+  async deletePost(id: string, userId:string) {
+    const queriredPost = await this.postsRepository.findOne({
+      where: { id: id },
+      relations: ['user'],
+    });
+
+    if (!queriredPost) {
+      throw new HttpException('No post found', 404);
+    } 
+
+    if(queriredPost.user.id !== userId){
+      throw new HttpException('You are not the owner of the post', HttpStatus.FORBIDDEN)
+    }
+
+    await this.postsRepository.delete({ id: id })
+    
+    return 'Post deleted successfully!'
+  }
 }

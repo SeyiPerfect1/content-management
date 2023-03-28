@@ -1,14 +1,27 @@
-import { Body, Controller, Get, HttpCode, Param, ParseUUIDPipe, Post, Request, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  ParseUUIDPipe,
+  Post,
+  Put,
+  Request,
+  UseGuards,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { AuthService } from '../auth/auth.service';
 import { JwtAuthGuard } from '../auth/guards/auth.jwt-auth.guard';
 import { createPostDTO } from './dtos/post.create.dto';
+import { updatePostDTO } from './dtos/post.update.dto';
 import { PostsService } from './post.services';
 
 @Controller('api/v1/posts')
 export class PostsController {
-  constructor(
-    private postService: PostsService,
-  ) {}
+  constructor(private postService: PostsService) {}
 
   @UseGuards(JwtAuthGuard)
   @Post()
@@ -25,9 +38,20 @@ export class PostsController {
 
   @UseGuards(JwtAuthGuard)
   @Get('/:id')
-  async getPost(@Param()  param) {
+  async getPost(@Param() param) {
     return await this.postService.getPostById(param.id);
   }
 
+  // update user profile
+  @UseGuards(JwtAuthGuard)
+  @Put('/:id')
+  async updatePost(@Body() postData: updatePostDTO, @Request() req, @Param() param) {
+    return await this.postService.updatePost(postData, param.id, req.user.userId);
+  }
 
+  @UseGuards(JwtAuthGuard)
+  @Delete('/:id')
+  async deleteProfile(@Request() req, @Param() param) {
+    return await this.postService.deletePost(param.id, req.user.userId);
+  }
 }
