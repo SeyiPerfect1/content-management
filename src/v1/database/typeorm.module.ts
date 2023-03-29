@@ -11,7 +11,7 @@ import { DataSource } from 'typeorm';
       inject: [ConfigService],
       // to configure the DataSourceOptions.
       useFactory: (configService: ConfigService) => ({
-        type: 'mysql',
+        type: 'postgres',
         host: configService.get('DATABASE_HOST'),
         port: +configService.get('DATABASE_PORT'),
         username: configService.get('DATABASE_USER'),
@@ -21,7 +21,7 @@ import { DataSource } from 'typeorm';
         autoLoadEntities: true,
         synchronize: false, //process.env.NODE_ENV === 'development',
         logging: process.env.NODE_ENV === 'production',
-        migrations: ['src/v1/database/migrations/**/*{.ts,.js}'],
+        migrations: ['dist/v1/database/migrations/**/*{.ts,.js}'],
         factories: ['src/v1/database/factories/**/*{.ts,.js}'],
         seeds: ['dist/v1/database/seeds**/*{.ts,.js}'],
         cli: { migrationsDir: 'src/database/migrations' }
