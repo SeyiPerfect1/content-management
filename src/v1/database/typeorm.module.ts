@@ -11,7 +11,7 @@ import { DataSource } from 'typeorm';
       inject: [ConfigService],
       // to configure the DataSourceOptions.
       useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
+        type: 'mysql',
         host: configService.get('DATABASE_HOST'),
         port: +configService.get('DATABASE_PORT'),
         username: configService.get('DATABASE_USER'),
