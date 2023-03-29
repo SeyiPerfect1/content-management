@@ -21,9 +21,9 @@ import { DataSource } from 'typeorm';
         autoLoadEntities: true,
         synchronize: false, //process.env.NODE_ENV === 'development',
         logging: process.env.NODE_ENV === 'production',
-        migrations: ['dist/v1/database/migrations/**/*{.ts,.js}'],
+        migrations: ['src/v1/database/migrations/**/*{.ts,.js}'],
         factories: ['src/v1/database/factories/**/*{.ts,.js}'],
-        seeds: ['src/v1/database/seeds**/*{.ts,.js}'],
+        seeds: ['dist/v1/database/seeds**/*{.ts,.js}'],
         cli: { migrationsDir: 'src/database/migrations' }
       }),
 
