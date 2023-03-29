@@ -8,8 +8,7 @@
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "run-s migration:run start-app",
-    "start-app": "nest start",
+    "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
@@ -25,10 +24,11 @@
     "migration:show": "npm run typeorm migration:show",
     "migration:run": "npm run typeorm migration:run",
     "migration:revert": "npm run typeorm migration:revert",
-    "seed:config": "ts-node ./node_modules/typeorm-seeding/dist/cli.js seed -n ./src/v1/database/typeorm.module.ts",
+    "seed:config": "ts-node ./node_modules/typeorm-extension/dist/cli/index.js seed -n ./src/v1/database/config/data-source.ts",
     "seed:run": "ts-node ./node_modules/typeorm-seeding/dist/cli/index.js seed -n ./src/v1/database/typeorm.module.ts"
   },
   "dependencies": {
+    "@faker-js/faker": "^7.6.0",
     "@hapi/joi": "^17.1.1",
     "@nestjs-modules/mailer": "^1.8.1",
     "@nestjs/common": "^9.0.0",
