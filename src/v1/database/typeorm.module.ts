@@ -1,5 +1,5 @@
 import { Module, Post } from '@nestjs/common';
-import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { User } from '../users/entities/user.entity';
 import { DataSource } from 'typeorm';
@@ -9,7 +9,6 @@ import { DataSource } from 'typeorm';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      // Use useFactory, useClass, or useExisting
       // to configure the DataSourceOptions.
       useFactory: (configService: ConfigService) => ({
         type: 'mysql',
@@ -21,8 +20,11 @@ import { DataSource } from 'typeorm';
         entities: [User, Post],
         autoLoadEntities: true,
         synchronize: false, //process.env.NODE_ENV === 'development',
-        logging: process.env.NODE_ENV === 'development',
-        migrations: ['src/migrations/**/*{.ts,.js}'],
+        logging: process.env.NODE_ENV === 'production',
+        migrations: ['src/v1/database/migrations/**/*{.ts,.js}'],
+        factories: ['src/v1/database/factories/**/*{.ts,.js}'],
+        seeds: ['src/v1/database/seeds**/*{.ts,.js}'],
+        cli: { migrationsDir: 'src/database/migrations' }
       }),
 
       // dataSource receives the configured DataSourceOptions
@@ -35,9 +37,4 @@ import { DataSource } from 'typeorm';
   ],
 })
 
-// await AppDataSource.initialize()
-// .then(() => {
-//     console.log("Data Source has been initialized");
-// })
-// .catch(() => console.error("Error during data source init."));
 export class DatabaseModule {}
