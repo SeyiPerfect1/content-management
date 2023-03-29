@@ -5,7 +5,6 @@ import { LocalStrategy } from './auth.local.strategy';
 import { AuthService } from './auth.service';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './auth.jwt.strategy';
-import { UsersService } from '../users/user.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({

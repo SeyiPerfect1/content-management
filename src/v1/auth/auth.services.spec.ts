@@ -1,17 +1,10 @@
 import { AuthService } from './auth.service';
 import { Test } from '@nestjs/testing';
-// import { UsersModule } from '../../users/users.module';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { JwtModule, JwtService } from '@nestjs/jwt';
-// import { DatabaseModule } from '../../database/database.module';
-import * as Joi from '@hapi/joi';
-import { DatabaseModule } from '../database/typeorm.module';
-import { UsersModule } from '../users/user.module';
+import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { User } from '../users/entities/user.entity';
 import { UsersService } from '../users/user.service';
-import { dbConfigValidationSchema } from '../database/config/typeorm.config.validation';
-import { jwtValidationSchema } from './config/auth.config.validation';
 import { mockedJwtService } from '../utilities/mocks/jwt.service';
 import { mockedConfigService } from '../utilities/mocks/config.service';
  

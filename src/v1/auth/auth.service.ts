@@ -1,10 +1,7 @@
 import {
-  HttpCode,
   HttpException,
-  HttpStatus,
   Injectable,
 } from '@nestjs/common';
-import { loginInterface } from '../users/interfaces/user.interfaces';
 import { UsersService } from '../users/user.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
@@ -26,7 +23,6 @@ export class AuthService {
       );
     }
 
-    console.log(user, password)
     const isMatch: boolean = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {

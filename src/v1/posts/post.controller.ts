@@ -5,13 +5,10 @@ import {
   Get,
   HttpCode,
   Param,
-  ParseUUIDPipe,
   Post,
   Put,
   Request,
   UseGuards,
-  UsePipes,
-  ValidationPipe,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/auth.jwt-auth.guard';
 import { createPostDTO } from './dtos/post.create.dto';
